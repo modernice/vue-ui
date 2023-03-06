@@ -16,9 +16,14 @@
   "scripts": {
     "test": "vitest",
     "test:watch": "vitest --watch",
-    "build": "vite build"
+    "build": "vite build",
+    "prepack": "pnpm build"
   },
   "author": "Saman Hosseini <bounoable@gmail.com>",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["dist", "package.json"],
   "license": "MIT",
   "devDependencies": {
     "@vue/reactivity": "^3.2.47",
