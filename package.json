@@ -1,0 +1,39 @@
+{
+  "name": "@modernice/vue-ui",
+  "version": "0.0.1",
+  "description": "UI composables for Vue 3",
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "build": "vite build"
+  },
+  "author": "Saman Hosseini <bounoable@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@vue/reactivity": "^3.2.47",
+    "@vueuse/core": "^9.0.0",
+    "@vueuse/shared": "^9.0.0",
+    "typescript": "^4.9.5",
+    "vite": "^4.1.4",
+    "vite-plugin-dts": "^2.0.2",
+    "vitest": "^0.25.8",
+    "vue": "^3.0.0"
+  },
+  "peerDependencies": {
+    "@vue/reactivity": "^3.2.47",
+    "@vueuse/core": "^9.0.0",
+    "@vueuse/shared": "^9.0.0",
+    "vue": "^3.0.0"
+  }
+}
