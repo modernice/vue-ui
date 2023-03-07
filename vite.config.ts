@@ -9,10 +9,17 @@ export default defineConfig({
     lib: {
       entry: './src/index.ts',
       formats: ['es', 'cjs'],
-      fileName: (format) => `index.${format === 'es' ? 'mjs' : format}`,
+      fileName: (format, name) =>
+        `${name === 'index' ? 'index' : `${name}/index`}.${
+          format === 'es' ? 'mjs' : format
+        }`,
     },
 
     rollupOptions: {
+      input: {
+        index: './src/index.ts',
+        utils: './src/utils/index.ts',
+      },
       external: Object.values(pkg.peerDependencies || {}),
     },
   },
