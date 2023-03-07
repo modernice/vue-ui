@@ -1,5 +1,5 @@
 import { MaybeComputedRef, resolveRef, useArrayEvery } from '@vueuse/core'
-import { computed, ref } from '@vue/reactivity'
+import { computed, ref, shallowRef } from '@vue/reactivity'
 import { MaybeArray, StringOf, forceArray } from '../shared.js'
 
 /**
@@ -101,17 +101,26 @@ export function useSearch<T>(
     return options?.trim ? s.trim() : s
   }
 
+  const termsMap = computed(() => {
+    const map = new Map<number, string[]>()
+    _list.value.forEach((item, index) => map.set(index, getTerms(item)))
+    return map
+  })
+
   /**
    * Items that match the search input, or all items if the search input is empty.
    */
   const result = computed(() =>
     modifiedInput.value
-      ? _list.value.filter((item) =>
-          getTerms(item).some((term) =>
-            strict.value
-              ? term === modifiedInput.value
-              : maybeTrim(term.toLowerCase()).includes(modifiedInput.value)
-          )
+      ? _list.value.filter(
+          (_, index) =>
+            termsMap.value
+              .get(index)
+              ?.some((term) =>
+                strict.value
+                  ? term === modifiedInput.value
+                  : maybeTrim(term.toLowerCase()).includes(modifiedInput.value)
+              ) ?? false
         )
       : _list.value
   )
