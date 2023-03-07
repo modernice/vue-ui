@@ -20,7 +20,13 @@ export default defineConfig({
         index: './src/index.ts',
         utils: './src/utils/index.ts',
       },
-      external: Object.values(pkg.peerDependencies || {}),
+      external: isExternal,
     },
   },
 })
+
+const peerDependencies = Object.keys(pkg.peerDependencies || {})
+
+function isExternal(dep: string) {
+  return dep.startsWith('@vue/') || peerDependencies.includes(dep)
+}
