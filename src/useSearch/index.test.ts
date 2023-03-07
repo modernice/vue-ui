@@ -10,7 +10,7 @@ describe('useSearch', () => {
 
     { first: 'Mario', last: 'Mario' },
     { first: 'Luigi', last: 'Mario' },
-  ]
+  ] as const
 
   it('returns all items by default', () => {
     const { result } = useSearch(people, (person) => [])

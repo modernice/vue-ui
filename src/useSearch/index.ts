@@ -35,7 +35,7 @@ type StringArrayFields<T> = keyof {
  * ```
  */
 export function useSearch<T>(
-  list: MaybeComputedRef<T[]>,
+  list: MaybeComputedRef<readonly T[]>,
   terms: TermsFunction<T> | MaybeComputedRef<TermFields<T>>,
   options?: {
     /**
