@@ -28,7 +28,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": ["dist", "package.json"],
+  "files": ["dist", "package.json", "index.d.ts", "utils.d.ts"],
   "license": "MIT",
   "devDependencies": {
     "@vue/reactivity": "^3.2.47",
