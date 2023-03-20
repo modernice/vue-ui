@@ -230,13 +230,15 @@ describe('useAction', () => {
 
   it(`returns 'null' while disabled`, async () => {
     {
-      const [run] = useAction(() => {}, { disabled: true })
+      const [run] = useAction(() => 'hello', { disabled: true })
       expectTypeOf(run).toMatchTypeOf<() => Promise<null>>()
+      expect(await run()).toBe(null)
     }
 
     {
-      const [run] = useAction(() => {}, { disabled: ref(true) })
+      const [run] = useAction(() => 'hello', { disabled: ref(true) })
       expectTypeOf(run).toMatchTypeOf<() => Promise<null>>()
+      expect(await run()).toBe(null)
     }
   })
 })
