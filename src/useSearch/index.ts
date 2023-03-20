@@ -1,6 +1,6 @@
-import { MaybeComputedRef, resolveRef, useArrayEvery } from '@vueuse/core'
-import { computed, ref, shallowRef } from '@vue/reactivity'
-import { MaybeArray, StringOf, forceArray } from '../shared.js'
+import { type MaybeComputedRef, resolveRef } from '@vueuse/core'
+import { computed, ref } from '@vue/reactivity'
+import { type MaybeArray, type StringOf, forceArray } from '../shared.js'
 
 /**
  * Extracts the term(s) from an item that should be compared to the search input.
