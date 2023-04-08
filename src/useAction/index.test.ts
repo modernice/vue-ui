@@ -1,6 +1,6 @@
 import { describe, it, expectTypeOf, expect, vi } from 'vitest'
 import { useAction } from './index.js'
-import { sleep } from '../test/wait.js'
+import { delay } from '../test/delay.js'
 import { ref } from '@vue/reactivity'
 
 describe('useAction', () => {
@@ -136,7 +136,7 @@ describe('useAction', () => {
   })
 
   it('is pending while the action is running', async () => {
-    const [run, pending] = useAction(() => sleep(50))
+    const [run, pending] = useAction(() => delay(50))
 
     expect(pending.value).toBe(false)
 
