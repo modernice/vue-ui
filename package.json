@@ -35,7 +35,7 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "@vue/reactivity": "^3.2.47",
+    "@vue/reactivity": "^3.2.45",
     "@vueuse/core": "^9.13.0",
     "@vueuse/shared": "^9.13.0",
     "typescript": "^5.0.2",
@@ -45,7 +45,7 @@
     "vue": "^3.2.47"
   },
   "peerDependencies": {
-    "@vue/reactivity": "^3.2.47",
+    "@vue/reactivity": "^3.2.45",
     "@vueuse/core": "^9.0.0",
     "@vueuse/shared": "^9.0.0",
     "vue": "^3.0.0"
