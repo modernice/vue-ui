@@ -1,4 +1,4 @@
-import { type MaybeComputedRef, resolveRef } from '@vueuse/core'
+import { type MaybeRefOrGetter, toRef } from '@vueuse/core'
 import { computed, ref } from '@vue/reactivity'
 import { type MaybeArray, type StringOf, forceArray } from '../shared.js'
 
@@ -35,22 +35,22 @@ type StringArrayFields<T> = keyof {
  * ```
  */
 export function useSearch<T>(
-  list: MaybeComputedRef<readonly T[]>,
-  terms: TermsFunction<T> | MaybeComputedRef<TermFields<T>>,
+  list: MaybeRefOrGetter<readonly T[]>,
+  terms: TermsFunction<T> | MaybeRefOrGetter<TermFields<T>>,
   options?: {
     /**
      * Makes the search case-sensitive.
      *
      * @default false
      */
-    caseSensitive?: MaybeComputedRef<boolean>
+    caseSensitive?: MaybeRefOrGetter<boolean>
 
     /**
      * Search input must match the term exactly. This option also enables case-sensitivity.
      *
      * @default false
      */
-    strict?: MaybeComputedRef<boolean>
+    strict?: MaybeRefOrGetter<boolean>
 
     /**
      * Trim whitespace from the search input before comparing to the items.
@@ -65,8 +65,8 @@ export function useSearch<T>(
     input?: string
   }
 ) {
-  const _list = resolveRef(list)
-  const termFields = typeof terms === 'function' ? undefined : resolveRef(terms)
+  const _list = toRef(list)
+  const termFields = typeof terms === 'function' ? undefined : toRef(terms)
 
   function getTerms(item: T) {
     if (termFields) {
@@ -81,8 +81,8 @@ export function useSearch<T>(
     return forceArray(termsFn(item))
   }
 
-  const caseSensitive = resolveRef(options?.caseSensitive ?? false)
-  const strict = resolveRef(options?.strict ?? false)
+  const caseSensitive = toRef(options?.caseSensitive ?? false)
+  const strict = toRef(options?.strict ?? false)
 
   /**
    * Input is compared to the terms of each item in the list.

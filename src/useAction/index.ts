@@ -1,5 +1,5 @@
 import { type Ref, readonly, ref } from '@vue/reactivity'
-import { type MaybeComputedRef, resolveRef } from '@vueuse/core'
+import { type MaybeRefOrGetter, toRef } from '@vueuse/core'
 
 /**
  * Wraps an action to provide pending status and error handling.
@@ -44,10 +44,10 @@ export function useAction<
     /**
      * While disabled, the runner will return `null` immediately without running the action.
      */
-    disabled?: MaybeComputedRef<Disabled>
+    disabled?: MaybeRefOrGetter<Disabled>
   }
 ) {
-  const disabled = resolveRef(options?.disabled)
+  const disabled = toRef(options?.disabled)
 
   const pending = ref(false)
   const error = ref(null) as Ref<string | null>

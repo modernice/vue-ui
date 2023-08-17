@@ -35,19 +35,19 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "@vue/reactivity": "^3.2.45",
-    "@vueuse/core": "^9.13.0",
-    "@vueuse/shared": "^9.13.0",
-    "typescript": "^5.0.2",
-    "vite": "^4.2.0",
-    "vite-plugin-dts": "^2.1.0",
-    "vitest": "^0.29.3",
-    "vue": "^3.2.47"
+    "@vue/reactivity": "^3.3.4",
+    "@vueuse/core": "^10.3.0",
+    "@vueuse/shared": "^10.3.0",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.9",
+    "vite-plugin-dts": "^3.5.2",
+    "vitest": "^0.34.2",
+    "vue": "^3.3.4"
   },
   "peerDependencies": {
     "@vue/reactivity": "^3.2.45",
-    "@vueuse/core": "^9.0.0",
-    "@vueuse/shared": "^9.0.0",
+    "@vueuse/core": "^10.3.0",
+    "@vueuse/shared": "^10.3.0",
     "vue": "^3.0.0"
   }
 }
