@@ -1,29 +1,35 @@
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
-import pkg from './package.json'
+import { readPackageJSON } from 'pkg-types'
 
-export default defineConfig({
-  plugins: [dts()],
+export default defineConfig(async () => {
+  const pkg = await readPackageJSON()
+  const deps = [
+    ...Object.keys(pkg.dependencies ?? {}),
+    ...Object.keys(pkg.peerDependencies ?? {}),
+  ]
 
-  build: {
-    lib: {
-      entry: './src/index.ts',
-      formats: ['es', 'cjs'],
-      fileName: (format, name) => `${name}.${format === 'es' ? 'mjs' : format}`,
-    },
+  function isExternal(dep: string) {
+    return dep === 'vue' || dep.startsWith('@vue/') || deps.includes(dep)
+  }
 
-    rollupOptions: {
-      input: {
-        index: './src/index.ts',
-        utils: './src/utils.ts',
+  return {
+    plugins: [dts()],
+
+    build: {
+      lib: {
+        entry: {
+          index: './src/index.ts',
+          utils: './src/utils.ts',
+        },
+        formats: ['es', 'cjs'],
+        fileName: (format, name) =>
+          `${name}.${format === 'es' ? 'mjs' : format}`,
       },
-      external: isExternal,
+
+      rollupOptions: {
+        external: isExternal,
+      },
     },
-  },
+  }
 })
-
-const peerDependencies = Object.keys(pkg.peerDependencies || {})
-
-function isExternal(dep: string) {
-  return dep.startsWith('@vue/') || peerDependencies.includes(dep)
-}

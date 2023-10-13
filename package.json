@@ -35,9 +35,14 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "@antfu/eslint-config": "1.0.0-beta.27",
     "@vue/reactivity": "^3.3.4",
     "@vueuse/core": "^10.5.0",
     "@vueuse/shared": "^10.5.0",
+    "eslint": "^8.51.0",
+    "eslint-config-prettier": "^9.0.0",
+    "pkg-types": "^1.0.3",
+    "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "vite": "^4.4.11",
     "vite-plugin-dts": "^3.6.0",
@@ -46,7 +51,7 @@
   },
   "peerDependencies": {
     "@vue/reactivity": "^3.2.45",
-    "@vueuse/core": "^10.3.0",
+    "@vueuse/core": "^10.5.0",
     "@vueuse/shared": "^10.3.0",
     "vue": "^3.0.0"
   }

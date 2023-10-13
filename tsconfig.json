@@ -3,9 +3,9 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "strict": true,
     "sourceMap": true,
     "resolveJsonModule": true,
@@ -16,6 +16,6 @@
     "rootDir": "./src",
     "baseUrl": "."
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.{ts,vue}"],
   "exclude": ["**/node_modules/**"]
 }
