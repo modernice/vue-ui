@@ -1,9 +1,9 @@
 # Vue UI library
 
-> This library is a work-in-progress.
+> Internal UI library.
 
 ## Installation
 
 ```sh
-npm i @modernice/vue-ui
+pnpm i @modernice/vue-ui
 ```

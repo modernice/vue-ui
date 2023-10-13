@@ -1,6 +1,6 @@
 import { describe, it, expectTypeOf, expect, vi } from 'vitest'
-import { useAction } from './index.js'
-import { delay } from '../test/delay.js'
+import { useAction } from './index'
+import { delay } from '../../test/delay'
 import { ref } from '@vue/reactivity'
 
 describe('useAction', () => {
@@ -111,7 +111,7 @@ describe('useAction', () => {
   })
 
   it('provides the error message when the action throws', async () => {
-    const [run, , error] = useAction(async () => {
+    const [run, { error }] = useAction(async () => {
       throw new Error('foo')
     })
 
@@ -122,7 +122,7 @@ describe('useAction', () => {
 
   it('resets the error message before running the action', async () => {
     let called = false
-    const [run, , error] = useAction(() => {
+    const [run, { error }] = useAction(() => {
       if (called) return
       called = true
       throw new Error('foo')
@@ -136,7 +136,7 @@ describe('useAction', () => {
   })
 
   it('is pending while the action is running', async () => {
-    const [run, pending] = useAction(() => delay(50))
+    const [run, { pending }] = useAction(() => delay(50))
 
     expect(pending.value).toBe(false)
 
@@ -148,7 +148,7 @@ describe('useAction', () => {
   })
 
   it('is not pending after an action throws', async () => {
-    const [run, pending] = useAction(() => {
+    const [run, { pending }] = useAction(() => {
       throw new Error('foo')
     })
 
@@ -157,7 +157,7 @@ describe('useAction', () => {
   })
 
   it('throws an error when enabling the `throw` option', () => {
-    const [run, , error] = useAction(
+    const [run, { error }] = useAction(
       () => {
         throw new Error('foo')
       },

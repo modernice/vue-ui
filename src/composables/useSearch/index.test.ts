@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { useSearch } from './index.js'
+import { useSearch } from './index'
 
 describe('useSearch', () => {
   const people = [

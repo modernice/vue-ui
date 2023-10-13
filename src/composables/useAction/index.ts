@@ -84,7 +84,7 @@ export function useAction<
     }
   }
 
-  return [run, readonly(pending), readonly(error)] as const
+  return [run, { pending: readonly(pending), error }] as const
 }
 
 type Result<

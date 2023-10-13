@@ -1,6 +1,6 @@
 import { type MaybeRefOrGetter, toRef } from '@vueuse/core'
 import { computed, ref } from '@vue/reactivity'
-import { type MaybeArray, type StringOf, forceArray } from '../shared.js'
+import { type MaybeArray, type StringOf, forceArray } from '../../shared'
 
 /**
  * Extracts the term(s) from an item that should be compared to the search input.

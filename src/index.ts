@@ -1,2 +1,2 @@
-export * from './useAction/index.js'
-export * from './useSearch/index.js'
+export * from './composables/useAction'
+export * from './composables/useSearch'
