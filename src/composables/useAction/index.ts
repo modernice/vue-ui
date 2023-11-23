@@ -1,4 +1,4 @@
-import { type Ref, readonly, ref } from '@vue/reactivity'
+import { type Ref, ref, computed } from '@vue/reactivity'
 import { type MaybeRefOrGetter, toRef } from '@vueuse/core'
 
 /**
@@ -32,7 +32,7 @@ import { type MaybeRefOrGetter, toRef } from '@vueuse/core'
 export function useAction<
   Action extends (...args: any[]) => any,
   Throw extends boolean,
-  Disabled extends boolean
+  Disabled extends boolean,
 >(
   action: Action,
   options?: {
@@ -45,7 +45,7 @@ export function useAction<
      * While disabled, the runner will return `null` immediately without running the action.
      */
     disabled?: MaybeRefOrGetter<Disabled>
-  }
+  },
 ) {
   const disabled = toRef(options?.disabled)
 
@@ -84,14 +84,14 @@ export function useAction<
     }
   }
 
-  return [run, { pending: readonly(pending), error }] as const
+  return [run, { pending: computed(() => pending.value), error }] as const
 }
 
 type Result<
   Action extends (...args: any[]) => any,
   Disabled extends boolean,
   Throw extends boolean,
-  Return = _Awaited<ReturnType<Action>>
+  Return = _Awaited<ReturnType<Action>>,
 > = [Disabled] extends [true]
   ? null
   : null extends Return
