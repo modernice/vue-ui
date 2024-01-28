@@ -8,6 +8,7 @@ export default antfu({
     'style/brace-style': ['error', '1tbs'],
     'style/arrow-parens': 'off',
     'style/member-delimiter-style': 'off',
+    'style/operator-linebreak': 'off',
     curly: 'off',
   },
 })

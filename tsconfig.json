@@ -14,8 +14,9 @@
     "skipLibCheck": true,
     "lib": ["esnext", "dom", "dom.iterable"],
     "rootDir": "./src",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "pretty": true
   },
-  "include": ["src/**/*.{ts,vue}"],
+  "include": ["./src/**/*"],
   "exclude": ["**/node_modules/**"]
 }

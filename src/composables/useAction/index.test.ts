@@ -107,7 +107,7 @@ describe('useAction', () => {
       throw new Error('foo')
     })
 
-    expect(await run()).toBe(null)
+    expect(await run()).toBeNull()
   })
 
   it('provides the error message when the action throws', async () => {
@@ -131,11 +131,11 @@ describe('useAction', () => {
       throw new Error('foo')
     })
 
-    expect(error.value).toBe(null)
+    expect(error.value).toBeNull()
     await run()
     expect(error.value).toBe('foo')
     await run()
-    expect(error.value).toBe(null)
+    expect(error.value).toBeNull()
   })
 
   it('is pending while the action is running', async () => {
@@ -167,7 +167,7 @@ describe('useAction', () => {
       { throw: true },
     )
 
-    expect(run).rejects.toThrow('foo')
+    expect(run()).rejects.toThrow('foo')
     expect(error.value).toBe('foo')
   })
 
@@ -235,13 +235,91 @@ describe('useAction', () => {
     {
       const [run] = useAction(() => 'hello', { disabled: true })
       expectTypeOf(run).toMatchTypeOf<() => Promise<null>>()
-      expect(await run()).toBe(null)
+      expect(await run()).toBeNull()
     }
 
     {
       const [run] = useAction(() => 'hello', { disabled: ref(true) })
       expectTypeOf(run).toMatchTypeOf<() => Promise<null>>()
-      expect(await run()).toBe(null)
+      expect(await run()).toBeNull()
+    }
+  })
+
+  it(`parses errors using the provided 'parseError' option`, async () => {
+    const [run, { error }] = useAction(
+      async () => {
+        throw new Error('foo')
+      },
+      { parseError: (err) => `${err.message} bar` },
+    )
+
+    const result = await run()
+
+    expect(result).toBeNull()
+    expect(error.value).toBe('foo bar')
+  })
+
+  it(`allows to return another Error from 'parseError'`, async () => {
+    {
+      const [run, { error }] = useAction(
+        async () => {
+          throw new Error('foo')
+        },
+        { parseError: (err) => new Error(`${err.message} bar`) },
+      )
+
+      const result = await run()
+
+      expect(result).toBeNull()
+      expect(error.value).toBeInstanceOf(Error)
+      expect(error.value?.message).toBe('foo bar')
+    }
+
+    {
+      const [run, { error }] = useAction(
+        async () => {
+          throw new Error('foo')
+        },
+        {
+          parseError: (err) => new TypeError(`some type error: ${err.message}`),
+        },
+      )
+
+      const result = await run()
+
+      expect(result).toBeNull()
+      expect(error.value).toBeInstanceOf(TypeError)
+      expect(error.value?.message).toBe('some type error: foo')
+    }
+
+    {
+      class CustomError extends Error {
+        constructor(message: string) {
+          super(`custom: ${message}`)
+        }
+      }
+
+      const [run, { error }] = useAction(
+        async () => {
+          throw new Error('foo')
+        },
+        {
+          throw: true,
+          parseError: (err) => new CustomError(`${err.message} bar`),
+        },
+      )
+
+      const p = run()
+
+      expect(p).rejects.toThrow('foo bar')
+      expect(p).rejects.toThrow(CustomError)
+
+      try {
+        await p
+      } catch (e) {}
+
+      expect(error.value).toBeInstanceOf(CustomError)
+      expect(error.value?.message).toBe('custom: foo bar')
     }
   })
 })

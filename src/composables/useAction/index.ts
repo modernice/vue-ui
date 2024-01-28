@@ -2,55 +2,61 @@ import { type Ref, computed, ref } from 'vue'
 import { type MaybeRefOrGetter, toRef } from '@vueuse/core'
 
 /**
- * Wraps an action to provide pending status and error handling.
- *
- * Returns the runner function as the first element of the returned tuple.
- * The second element is a {@link Ref} that is `true` while the action is
- * pending. The third element is a {@link Ref} that contains the error message
- * if the action throws.
- *
- * The runner will not throw an error if underlying action throws. To enable
- * this behavior, pass `true` to the `throw` option.
- *
- * You can disable the runner via the `disabled` option. While disabled, the
- * runner immediately returns null and does not run the action.
- *
- * @example
- * ```ts
- * const [run, pending, error] = useAction(async () => {
- *  const resp = await fetch('https:
- *  return await resp.json()
- * })
- *
- * const promise = run()
- *
- * const user = await promise
- *
- * console.log({ user, error })
- * ```
+ * `useAction` encapsulates an asynchronous operation, providing reactive states
+ * for its execution status and any errors that occur. It accepts an action
+ * function of type {@link TAction} and an optional configuration object. The
+ * configuration can specify error handling with `parseError`, whether to throw
+ * errors with `throw`, and a condition to disable the action with `disabled`.
+ * The function returns a tuple where the first element is the `run` function
+ * that triggers the action and the second element is an object containing
+ * reactive states: `pending`, indicating if the action is in progress, and
+ * `error`, which holds any error that has occurred. The return type of the
+ * `run` function is determined by the Result type, which considers whether the
+ * action is disabled, should return null, or throw an error.
  */
 export function useAction<
   TAction extends (...args: any[]) => any,
   TThrow extends boolean,
   TDisabled extends boolean,
+  TError extends Error | string = string,
 >(
   action: TAction,
   options?: {
     /**
-     * If `true`, the runner will throw an error if the action throws.
+     * Whether to throw errors. If `true`, the `run` function will throw any
+     * errors that occur. If `false`, the `run` function will return `null` if
+     * an error occurs.
+     *
+     * Regardless of this option, the `error` state will be set to the error
+     * that occurred.
+     *
+     * @default false
      */
     throw?: TThrow
 
     /**
-     * While disabled, the runner will return `null` immediately without running the action.
+     * Whether the action is disabled. If `true`, the `run` function will not
+     * execute the action.
+     *
+     * @default false
      */
     disabled?: MaybeRefOrGetter<TDisabled>
+
+    /**
+     * A function to parse errors. If provided, the `error` state will be set to
+     * the result of this function. If not provided, the `error` state will be
+     * set to the error's `message` property.
+     *
+     * @param error The error that occurred.
+     * @returns The parsed error.
+     */
+    parseError?: (error: Error) => TError
   },
 ) {
   const disabled = toRef(options?.disabled)
 
   const pending = ref(false)
-  const error = ref(null) as Ref<string | null>
+  const error: Ref<TError | null> = ref(null)
 
   async function run(
     ...args: Parameters<TAction>
@@ -69,27 +75,45 @@ export function useAction<
     } catch (e) {
       pending.value = false
 
-      if (e instanceof Error) {
-        error.value = e.message
+      if (!(e instanceof Error)) {
+        throw new TypeError(`Action threw a non-Error object: ${e}`)
+      }
+
+      const err = e as Error
+
+      if (!options?.parseError) {
+        error.value = err.message as TError
 
         if (options?.throw) {
-          throw e
+          throw err
         }
 
         return null as any
       }
 
-      error.value = String(e)
+      error.value = (
+        options?.parseError ? options.parseError(err) : err
+      ) as TError
 
       if (options?.throw) {
-        throw error.value
+        const terr =
+          error.value instanceof Error
+            ? error.value
+            : new Error(String(error.value))
+        throw terr
       }
 
       return null as any
     }
   }
 
-  return [run, { pending: computed(() => pending.value), error }] as const
+  return [
+    run,
+    {
+      pending: computed(() => pending.value),
+      error: error as Ref<TError | null>,
+    },
+  ] as const
 }
 
 type Result<
