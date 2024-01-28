@@ -8,7 +8,7 @@ import { defu } from 'defu'
 export interface UseActionOptions<
   TThrow extends boolean,
   TDisabled extends boolean,
-  TError extends Error | string = string,
+  TErrorGlobal extends Error | string = string,
 > {
   /**
    * Whether to throw errors. If `true`, the `run` function will throw any
@@ -38,7 +38,7 @@ export interface UseActionOptions<
    * @param error The error that occurred.
    * @returns The parsed error.
    */
-  parseError?: (error: Error) => TError
+  parseError?: (error: Error) => TErrorGlobal
 }
 
 /**
@@ -50,20 +50,20 @@ export interface UseActionOptions<
  * optional disabling of the action.
  */
 export function createUseAction<
-  TError extends Error | string = string,
->(baseOptions?: { parseError?: (error: Error) => TError }) {
+  TErrorGlobal extends Error | string = string,
+>(baseOptions?: { parseError?: (error: Error) => TErrorGlobal }) {
   return function useAction<
     TAction extends (...args: any[]) => any,
     TThrow extends boolean,
     TDisabled extends boolean,
-    TError2 extends Error | string = TError,
-  >(action: TAction, options?: UseActionOptions<TThrow, TDisabled, TError2>) {
+    TError extends Error | string = TErrorGlobal,
+  >(action: TAction, options?: UseActionOptions<TThrow, TDisabled, TError>) {
     const opts = defu(options, baseOptions)
 
     const disabled = toRef(opts.disabled)
 
     const pending = ref(false)
-    const error: Ref<TError2 | null> = ref(null)
+    const error: Ref<TError | null> = ref(null)
 
     async function run(
       ...args: Parameters<TAction>
@@ -89,7 +89,7 @@ export function createUseAction<
         const err = e as Error
 
         if (!opts?.parseError) {
-          error.value = err.message as TError2
+          error.value = err.message as TError
 
           if (opts?.throw) {
             throw err
@@ -98,7 +98,7 @@ export function createUseAction<
           return null as any
         }
 
-        error.value = (opts.parseError ? opts.parseError(err) : err) as TError2
+        error.value = (opts.parseError ? opts.parseError(err) : err) as TError
 
         if (opts.throw) {
           const terr =
