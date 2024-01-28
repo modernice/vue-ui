@@ -1,5 +1,5 @@
 import { type MaybeRefOrGetter, toRef } from '@vueuse/core'
-import { computed, ref } from '@vue/reactivity'
+import { computed, ref } from 'vue'
 import { type MaybeArray, type StringOf, forceArray } from '../../shared'
 
 /**
@@ -63,7 +63,7 @@ export function useSearch<T>(
      * Initial search input.
      */
     input?: string
-  }
+  },
 ) {
   const _list = toRef(list)
   const termFields = typeof terms === 'function' ? undefined : toRef(terms)
@@ -93,8 +93,8 @@ export function useSearch<T>(
     maybeTrim(
       strict.value || caseSensitive.value
         ? input.value
-        : input.value.toLowerCase()
-    )
+        : input.value.toLowerCase(),
+    ),
   )
 
   function maybeTrim(s: string) {
@@ -119,10 +119,10 @@ export function useSearch<T>(
               ?.some((term) =>
                 strict.value
                   ? term === modifiedInput.value
-                  : maybeTrim(term.toLowerCase()).includes(modifiedInput.value)
-              ) ?? false
+                  : maybeTrim(term.toLowerCase()).includes(modifiedInput.value),
+              ) ?? false,
         )
-      : _list.value
+      : _list.value,
   )
 
   return {

@@ -1,4 +1,4 @@
-import { type Ref, ref, computed } from '@vue/reactivity'
+import { type Ref, computed, ref } from '@vue/reactivity'
 import { type MaybeRefOrGetter, toRef } from '@vueuse/core'
 
 /**
@@ -18,33 +18,33 @@ import { type MaybeRefOrGetter, toRef } from '@vueuse/core'
  * @example
  * ```ts
  * const [run, pending, error] = useAction(async () => {
- *  const resp = await fetch('https://api.github.com/users/octocat')
+ *  const resp = await fetch('https:
  *  return await resp.json()
  * })
- * // pending.value === false
+ *
  * const promise = run()
- * // pending.value === true
+ *
  * const user = await promise
- * // pending.value === false
+ *
  * console.log({ user, error })
  * ```
  */
 export function useAction<
-  Action extends (...args: any[]) => any,
-  Throw extends boolean,
-  Disabled extends boolean,
+  TAction extends (...args: any[]) => any,
+  TThrow extends boolean,
+  TDisabled extends boolean,
 >(
-  action: Action,
+  action: TAction,
   options?: {
     /**
      * If `true`, the runner will throw an error if the action throws.
      */
-    throw?: Throw
+    throw?: TThrow
 
     /**
      * While disabled, the runner will return `null` immediately without running the action.
      */
-    disabled?: MaybeRefOrGetter<Disabled>
+    disabled?: MaybeRefOrGetter<TDisabled>
   },
 ) {
   const disabled = toRef(options?.disabled)
@@ -53,14 +53,15 @@ export function useAction<
   const error = ref(null) as Ref<string | null>
 
   async function run(
-    ...args: Parameters<Action>
-  ): Promise<Result<Action, Disabled, Throw>> {
+    ...args: Parameters<TAction>
+  ): Promise<Result<TAction, TDisabled, TThrow>> {
     if (disabled.value) {
       return null as any
     }
 
     error.value = null
     pending.value = true
+
     try {
       const result = await action(...args)
       pending.value = false
@@ -71,14 +72,18 @@ export function useAction<
       if (e instanceof Error) {
         error.value = e.message
 
-        if (options?.throw) throw e
+        if (options?.throw) {
+          throw e
+        }
 
         return null as any
       }
 
       error.value = String(e)
 
-      if (options?.throw) throw error.value
+      if (options?.throw) {
+        throw error.value
+      }
 
       return null as any
     }
@@ -95,10 +100,10 @@ type Result<
 > = [Disabled] extends [true]
   ? null
   : null extends Return
-  ? Return
-  : [Throw] extends [true]
-  ? Return
-  : Return | NullResult<Throw>
+    ? Return
+    : [Throw] extends [true]
+      ? Return
+      : Return | NullResult<Throw>
 
 type _Awaited<T> = T extends PromiseLike<infer U> ? _Awaited<U> : T
 

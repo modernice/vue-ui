@@ -1,7 +1,7 @@
-import { describe, it, expectTypeOf, expect, vi } from 'vitest'
-import { useAction } from './index'
+import { describe, expect, expectTypeOf, it, vi } from 'vitest'
+import { ref } from 'vue'
 import { delay } from '../../test/delay'
-import { ref } from '@vue/reactivity'
+import { useAction } from './index'
 
 describe('useAction', () => {
   it('returns a correctly typed runner function', () => {
@@ -18,7 +18,7 @@ describe('useAction', () => {
     }
 
     {
-      const [run] = useAction(() => ({ foo: 'bar' } as const))
+      const [run] = useAction(() => ({ foo: 'bar' }) as const)
       expectTypeOf(run).toMatchTypeOf<() => Promise<{ foo: 'bar' } | null>>()
     }
 
@@ -67,7 +67,7 @@ describe('useAction', () => {
         (
           foo: string,
           bar: number,
-          baz: true
+          baz: true,
         ) => Promise<{ foo: string; bar: number; baz: true } | null>
       >()
     }
@@ -82,7 +82,7 @@ describe('useAction', () => {
         (
           foo: 'hello',
           bar: number,
-          baz: true
+          baz: true,
         ) => Promise<{ foo: 'hello'; bar: number; baz: true } | null>
       >()
     }
@@ -123,7 +123,10 @@ describe('useAction', () => {
   it('resets the error message before running the action', async () => {
     let called = false
     const [run, { error }] = useAction(() => {
-      if (called) return
+      if (called) {
+        return
+      }
+
       called = true
       throw new Error('foo')
     })
@@ -161,7 +164,7 @@ describe('useAction', () => {
       () => {
         throw new Error('foo')
       },
-      { throw: true }
+      { throw: true },
     )
 
     expect(run).rejects.toThrow('foo')
