@@ -1,4 +1,4 @@
-import { type Ref, computed, ref } from '@vue/reactivity'
+import { type Ref, computed, ref } from 'vue'
 import { type MaybeRefOrGetter, toRef } from '@vueuse/core'
 
 /**

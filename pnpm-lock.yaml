@@ -8,14 +8,11 @@ devDependencies:
   '@antfu/eslint-config':
     specifier: 2.6.3
     version: 2.6.3(eslint@8.56.0)(typescript@5.3.3)(vitest@1.2.2)
-  '@vue/reactivity':
-    specifier: ^3.4.15
-    version: 3.4.15
   '@vueuse/core':
-    specifier: ^10.7.2
+    specifier: ^10.0.0
     version: 10.7.2(vue@3.4.15)
   '@vueuse/shared':
-    specifier: ^10.7.2
+    specifier: ^10.0.0
     version: 10.7.2(vue@3.4.15)
   eslint:
     specifier: ^8.56.0
@@ -42,7 +39,7 @@ devDependencies:
     specifier: ^1.2.2
     version: 1.2.2
   vue:
-    specifier: ^3.4.15
+    specifier: ^3.0.0
     version: 3.4.15(typescript@5.3.3)
 
 packages:
