@@ -1,7 +1,7 @@
 import { describe, expect, expectTypeOf, it, vi } from 'vitest'
 import { ref } from 'vue'
 import { delay } from '../../test/delay'
-import { useAction } from './index'
+import { createUseAction, useAction } from './index'
 
 describe('useAction', () => {
   it('returns a correctly typed runner function', () => {
@@ -321,5 +321,46 @@ describe('useAction', () => {
       expect(error.value).toBeInstanceOf(CustomError)
       expect(error.value?.message).toBe('custom: foo bar')
     }
+  })
+})
+
+describe('createUseAction', () => {
+  it(`creates a custom 'useAction' hook`, async () => {
+    const useAction = createUseAction()
+
+    const [run] = useAction(() => 'hello')
+
+    expect(await run()).toBe('hello')
+  })
+
+  it(`passes the provided 'parseError' option to useAction`, async () => {
+    const useAction = createUseAction({
+      parseError: (err) => `${err.message} bar`,
+    })
+
+    const [run, { error }] = useAction(() => {
+      throw new Error('foo')
+    })
+
+    await run()
+
+    expect(error.value).toBe('foo bar')
+  })
+
+  it(`supports overriding the 'parseError' option`, async () => {
+    const useAction = createUseAction({
+      parseError: (err) => `${err.message} bar`,
+    })
+
+    const [run, { error }] = useAction(
+      () => {
+        throw new Error('foo')
+      },
+      { parseError: (err) => `${err.message} baz` },
+    )
+
+    await run()
+
+    expect(error.value).toBe('foo baz')
   })
 })
